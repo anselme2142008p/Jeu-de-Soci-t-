@@ -24,9 +24,10 @@ jobs:
       - name: Créer le projet Android avec notre code
         run: |
           unzip -q source.zip -d src
-          flutter create --platforms=android --project-name jeux_societe --org com.jeux.societe app_build
+          flutter create --platforms=android --project-name rotegan --org com.rotegan app_build
           rm -rf app_build/lib
           cp -r src/lib app_build/lib
+          if [ -f src/setup.sh ]; then sh src/setup.sh; fi
 
       - name: Ajouter les librairies
         working-directory: app_build
@@ -42,5 +43,5 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: jeux-de-societe-apk
+          name: rotegan-apk
           path: app_build/build/app/outputs/flutter-apk/app-release.apk
