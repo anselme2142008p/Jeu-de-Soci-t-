@@ -37,6 +37,18 @@ jobs:
         run: |
           sed -i 's#<application#<uses-permission android:name="android.permission.INTERNET"/>\n    <uses-permission android:name="android.permission.RECORD_AUDIO"/>\n    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>\n    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>\n    <application#' app_build/android/app/src/main/AndroidManifest.xml
 
+      - name: Analyse du code (les erreurs s'affichent en haut de la page de l'exécution)
+        working-directory: app_build
+        continue-on-error: true
+        run: |
+          flutter analyze --no-fatal-infos --no-fatal-warnings > analyse.txt 2>&1 || true
+          {
+            echo "## Erreurs trouvées dans le code"
+            echo '```'
+            grep " error " analyse.txt | head -40 || true
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
       - name: Construire l'APK
         working-directory: app_build
         run: flutter build apk --release
